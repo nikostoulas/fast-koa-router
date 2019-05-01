@@ -10,6 +10,8 @@ assert.deepEqual(parse(routes), parse(routes2));
 assert.deepEqual(handlePathVariables(parse(routes)), {
   '/health': { get: [] },
   '/api/v1/100': { get: [] },
+  '/foo': { get: [] },
+  '/foo/bar/3': { get: [] },
   '/eps/v1/accounts/:id/rewards': { post: [] },
   '/api/v1/webhooks/events/:id/:sub/:action': { policy: [] },
   '/eps': { '/v1': { '/accounts': { '/_VAR_': { paramName: 'id', '/rewards': { post: [] } } } } },
@@ -19,10 +21,8 @@ assert.deepEqual(handlePathVariables(parse(routes)), {
         '/events': {
           '/_VAR_': {
             paramName: 'id',
-            policy: [],
             '/_VAR_': {
               paramName: 'sub',
-              policy: [],
               '/_VAR_': {
                 paramName: 'action',
                 policy: []

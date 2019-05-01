@@ -4,8 +4,16 @@ const routes = {
   '/health': {
     get: controllers
   },
-  '/api/v1/100': {
-    get: controllers
+  '/api': {
+    '/v1/100': {
+      get: controllers
+    }
+  },
+  '/foo': {
+    get: controllers,
+    '/bar/3': {
+      get: controllers
+    }
   },
   '/eps/v1/accounts/:id/rewards': {
     post: controllers

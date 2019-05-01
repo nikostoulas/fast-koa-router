@@ -5,13 +5,10 @@ module.exports = routes => {
   return async (ctx, next) => {
     const policy = router.getPolicy(ctx);
     const route = router.getRouteAndSetState(ctx);
-    if (policy) await policy(ctx, next);
-    if (route) {
-      if (Array.isArray(route)) {
-        return route.reduceRight((middleware, r) => r(ctx, middleware), next);
-      } else {
-        await route(ctx, next);
-      }
-    }
+    const middlewares = [];
+    if (policy) middlewares.push(policy);
+    if (route) middlewares.push(...(Array.isArray(route) ? route : [route]));
+
+    await middlewares.reduceRight((middleware, r) => r(ctx, middleware), next);
   };
 };

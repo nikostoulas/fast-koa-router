@@ -6,16 +6,18 @@ methods.set('patch', true);
 methods.set('put', true);
 methods.set('policy', true);
 
+const isHttpMethod = key => methods.has(key);
+
 exports.parse = function parse(routes, path = '', method, parsedObj = {}) {
   if (!routes) {
     return;
   }
   if (Array.isArray(routes) || typeof routes === 'function') {
-    parsedObj[path] = { [method]: routes, ...parsedObj[path] };
+    parsedObj[path] = { [method]: routes };
     return;
   }
   Object.entries(routes).forEach(([key, value]) => {
-    if (methods.has(key)) {
+    if (isHttpMethod(key)) {
       parse(value, path, key, parsedObj);
       return;
     }
@@ -37,7 +39,7 @@ exports.handlePathVariables = function(parsedObj) {
         iterator[`/${path}`] = { ...iterator[`/${path}`] };
         if (path === '_VAR_') iterator[`/${path}`].paramName = oldParts[i].substring(1);
         iterator = iterator[`/${path}`];
-        if (path === parts[parts.length - 1]) {
+        if (i === parts.length - 1) {
           Object.assign(iterator, parsedObj[key]);
         }
         i++;

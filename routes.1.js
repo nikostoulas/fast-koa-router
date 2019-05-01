@@ -7,7 +7,9 @@ const routes = {
       '/v1': {
         '/100': controllers
       }
-    }
+    },
+    '/foo': controllers,
+    '/foo/bar/3': controllers
   },
   post: {
     '/eps': {
