@@ -1,5 +1,5 @@
 import { Router } from '../src/router';
-import { routes } from './routes';
+import { routes } from './routes.simple';
 import * as assert from 'assert';
 
 describe('Router', function() {
@@ -9,12 +9,12 @@ describe('Router', function() {
   });
 
   it('gets policy', function() {
-    const route = router.getPolicy({ path: '/api/v1/webhooks/events/id/sub/action' });
+    const route = router.getPolicy({ path: '/nested/path' });
     assert.deepEqual(route, []);
   });
 
   it('gets method and sets state', function() {
-    const ctx = { path: '/api/v1/accounts/10/rewards', method: 'POST' };
+    const ctx = { path: '/nested/path/10', method: 'GET' };
     const route = router.getRouteAndSetState(ctx);
     assert.deepEqual(route, []);
     assert.deepEqual((ctx as any).params, { id: '10' });
