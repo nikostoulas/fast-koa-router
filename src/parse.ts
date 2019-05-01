@@ -6,18 +6,18 @@ methods.set('patch', true);
 methods.set('put', true);
 methods.set('policy', true);
 
-const isHttpMethod = key => methods.has(key);
+const isHttpMethodOrPolicy = key => methods.has(key);
 
 export function parse(routes, path = '', method = null, parsedObj = {}) {
   if (!routes) {
     return;
   }
   if (Array.isArray(routes) || typeof routes === 'function') {
-    parsedObj[path] = { [method]: routes };
+    parsedObj[path] = { [method]: routes, ...parsedObj[path] };
     return;
   }
   Object.entries(routes).forEach(([key, value]) => {
-    if (isHttpMethod(key)) {
+    if (isHttpMethodOrPolicy(key)) {
       parse(value, path, key, parsedObj);
       return;
     }

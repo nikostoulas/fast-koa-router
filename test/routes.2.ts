@@ -15,7 +15,7 @@ export const routes = {
       get: controllers
     }
   },
-  '/eps/v1/accounts/:id/rewards': {
+  '/api/v1/accounts/:id/rewards': {
     post: controllers
   },
   '/api/v1/webhooks/events/:id/:sub/:action': {

@@ -9,7 +9,8 @@
     "declaration": true,
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "../build",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
   },
   "filesGlob": [
     "./*.ts"

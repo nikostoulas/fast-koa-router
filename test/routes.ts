@@ -8,7 +8,7 @@ export const routes = {
     '/foo': controllers
   },
   post: {
-    '/eps/v1/': { 'accounts/:id/rewards': controllers }
+    '/api/v1/': { 'accounts/:id/rewards': controllers }
   },
   policy: {
     '/api/v1/webhooks/events/:id/:sub/:action': controllers

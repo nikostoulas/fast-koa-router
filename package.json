@@ -1,5 +1,5 @@
 {
-  "name": "router",
+  "name": "simple-koa-router",
   "version": "0.1.0",
   "description": "",
   "main": "build/middleware.js",

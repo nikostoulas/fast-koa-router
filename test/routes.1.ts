@@ -12,7 +12,7 @@ export const routes = {
     '/foo/bar/3': controllers
   },
   post: {
-    '/eps': {
+    '/api': {
       '/v1': {
         '/accounts': {
           '/:id': {

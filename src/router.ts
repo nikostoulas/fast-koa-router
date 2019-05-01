@@ -6,7 +6,7 @@ export class Router {
   }
 
   getRouteAndSetState(ctx) {
-    const  { path, method } = ctx;
+    const { path, method } = ctx;
     const { route, params } = getPathMethod(this.routes, path, method.toLowerCase());
     ctx.params = params || {};
     return route;

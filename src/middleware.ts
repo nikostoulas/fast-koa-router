@@ -1,6 +1,6 @@
 import { Router } from './router';
 
-module.exports = routes => {
+export const router = routes => {
   const router = new Router(routes);
   return async (ctx, next) => {
     const policy = router.getPolicy(ctx);
@@ -8,6 +8,6 @@ module.exports = routes => {
     const middlewares = [];
     if (policy) middlewares.push(policy);
     if (route) middlewares.push(...(Array.isArray(route) ? route : [route]));
-    await middlewares.reduceRight((middleware, r) => r(ctx, middleware), next);
+    await middlewares.reduceRight((middleware, r) => () => r(ctx, middleware), next)();
   };
 };
