@@ -48,3 +48,24 @@ exports.handlePathVariables = function(parsedObj) {
   }
   return parsedObj;
 };
+
+module.exports.getPathMethod = function(routes, path, method) {
+  const params = {};
+  if (routes[path] && routes[path][method]) {
+    return { route: routes[path][method] };
+  } else {
+    const parts = path.split('/').filter(x => x);
+    let iterator = routes;
+    for (const path of parts) {
+      if (iterator[`/${path}`]) {
+        iterator = iterator[`/${path}`];
+      } else if (iterator['/_VAR_']) {
+        iterator = iterator['/_VAR_'];
+        params[iterator.paramName] = path;
+      } else {
+        return {};
+      }
+    }
+    return { route: iterator[method], params };
+  }
+};
