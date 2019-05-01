@@ -8,7 +8,7 @@ methods.set('policy', true);
 
 const isHttpMethod = key => methods.has(key);
 
-exports.parse = function parse(routes, path = '', method, parsedObj = {}) {
+export function parse(routes, path = '', method = null, parsedObj = {}) {
   if (!routes) {
     return;
   }
@@ -24,10 +24,10 @@ exports.parse = function parse(routes, path = '', method, parsedObj = {}) {
     parse(value, path + key, method, parsedObj);
   });
   return parsedObj;
-};
+}
 
 const pathVariableRegexp = /\/?(\:.*?)(?:\/|$)/g;
-exports.handlePathVariables = function(parsedObj) {
+export function handlePathVariables(parsedObj) {
   for (const [key, value] of Object.entries(parsedObj)) {
     if (pathVariableRegexp.test(key)) {
       const newKey = key.replace(pathVariableRegexp, (a, b) => a.replace(b, '_VAR_'));
@@ -47,9 +47,9 @@ exports.handlePathVariables = function(parsedObj) {
     }
   }
   return parsedObj;
-};
+}
 
-module.exports.getPathMethod = function(routes, path, method) {
+export function getPathMethod(routes, path, method) {
   const params = {};
   if (routes[path] && routes[path][method]) {
     return { route: routes[path][method] };
@@ -68,4 +68,4 @@ module.exports.getPathMethod = function(routes, path, method) {
     }
     return { route: iterator[method], params };
   }
-};
+}

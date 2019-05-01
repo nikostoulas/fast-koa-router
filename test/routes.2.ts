@@ -1,6 +1,6 @@
 const controllers = [];
 
-const routes = {
+export const routes = {
   '/health': {
     get: controllers
   },
@@ -22,5 +22,3 @@ const routes = {
     policy: controllers
   }
 };
-
-exports.routes = routes;

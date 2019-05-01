@@ -1,3 +1,5 @@
 node_modules
 performance-test
 .*
+build
+coverage

@@ -1,4 +1,4 @@
-const { Router } = require('./router');
+import { Router } from './router';
 
 module.exports = routes => {
   const router = new Router(routes);

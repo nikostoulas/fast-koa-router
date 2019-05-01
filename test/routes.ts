@@ -1,6 +1,6 @@
 const controllers = [];
 
-const routes = {
+export const routes = {
   get: {
     '/health': controllers,
     '/api/v1/100': controllers,
@@ -14,5 +14,3 @@ const routes = {
     '/api/v1/webhooks/events/:id/:sub/:action': controllers
   }
 };
-
-exports.routes = routes;

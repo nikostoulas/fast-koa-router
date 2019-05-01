@@ -1,6 +1,6 @@
 const controllers = [];
 
-const routes = {
+export const routes = {
   get: {
     '/health': controllers,
     '/api': {
@@ -38,5 +38,3 @@ const routes = {
     }
   }
 };
-
-exports.routes = routes;

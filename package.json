@@ -2,17 +2,46 @@
   "name": "router",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/middleware.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf ./build",
+    "prebuild": "npm run clean",
+    "build": "tsc -p src",
+    "prewatch": "npm run clean",
+    "watch": "tsc -w -p src",
+    "prepublishOnly": "npm run build && npm test",
+    "pretest": "tslint src/*.ts",
+    "test": "nyc mocha"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "node-nc": "^0.8.1"
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   },
   "devDependencies": {
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.13.8",
     "koa": "^2.6.1",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.0.0",
+    "source-map-support": "^0.5.12",
+    "ts-node": "^8.1.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5"
   }
 }
