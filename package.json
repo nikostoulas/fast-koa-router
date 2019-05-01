@@ -1,6 +1,6 @@
 {
-  "name": "simple-koa-router",
-  "version": "0.1.0",
+  "name": "fast-koa-router",
+  "version": "0.0.0",
   "description": "",
   "main": "build/middleware.js",
   "scripts": {
