@@ -1,70 +1,99 @@
-# Simple Koa Router
+# Fast Koa Router
 
 ## Installation
 
-`npm install simple-koa-router`
+`npm install fast-koa-router`
+
+## About
 
 ## Usage
 
 ```js
-const routes ={
-    get: {
-        '/path': actions,
-        '/nested': {
-        '/path': actions,
-        '/path/:id': actions
-        }
+const routes = {
+  get: {
+    '/path': async function(ctx, next) {
+      ctx.body = 'ok';
     },
-    post: {
-        '/path': actions
-    },
-    policy: {
-        '/path': actions,
-        '/nested': {
-        '/path': actions,
-        '/path/:id': actions
-        }
+    '/nested': {
+      '/path': async function(ctx, next) {},
+      '/path/:id': async function(ctx, next) {}
     }
-}
+  },
+  post: {
+    '/path': async function(ctx, next) {}
+  },
+  policy: {
+    '/path': async function(ctx, next) {},
+    '/nested': {
+      '/path': async function(ctx, next) {},
+      '/path/:id': async function(ctx, next) {}
+    }
+  }
+};
 
-// or 
+// or
 
 const routes = {
   '/path': {
-    get: actions,
-    post: actions,
-    policy: actions
+    get: async function(ctx, next) {
+      ctx.body = 'ok';
+    },
+    post: async function(ctx, next) {},
+    policy: async function(ctx, next) {}
   },
   '/nested': {
-    '/path': { get: actions, policy: actions },
-    '/path/:id': { get: actions, policy: actions }
+    '/path': { get: async function(ctx, next) {}, policy: async function(ctx, next) {} },
+    '/path/:id': { get: async function(ctx, next) {}, policy: async function(ctx, next) {} }
   }
-}
+};
 
 // or
 
 const routes = {
   get: {
-    '/path': actions,
-    '/nested/path': actions,
-    '/nested/path/:id': actions
+    '/path': async function(ctx, next) {},
+    '/nested/path': async function(ctx, next) {},
+    '/nested/path/:id': async function(ctx, next) {}
   },
   post: {
-    '/path': actions
+    '/path': async function(ctx, next) {}
   },
   policy: {
-    '/path': actions,
-    '/nested/path': actions,
-    '/nested/path/:id': actions
+    '/path': async function(ctx, next) {},
+    '/nested/path': async function(ctx, next) {},
+    '/nested/path/:id': async function(ctx, next) {}
   }
-}
+};
 ```
+
+Supports
+
+- put
+- post
+- get
+- post
+- delete
+- patch
+
+methods
 
 ```js
 const Koa = require('koa');
 const app = new Koa();
-const { router } = require('simple-koa-router');
+const { router } = require('fast-koa-router');
 
 app.use(router(routes));
 app.listen(8080);
 ```
+
+
+## Policies
+
+Policies are used for authentication and authorization.
+They must call next in order for the actual route to be executed.
+
+
+## Fast
+
+The path matching is pretty simple. Unlike other middlewares not all routes are checked so performance does not degrade with routes size. 
+However complex regex matching is not supported.
