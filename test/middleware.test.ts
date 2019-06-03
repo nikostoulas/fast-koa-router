@@ -19,6 +19,7 @@ describe('Middleware', function() {
     });
 
     assert.deepEqual(ctx, {
+      _matchedRoute: '/foo/bar/3',
       body: 'body',
       method: 'GET',
       params: {},
@@ -55,6 +56,7 @@ describe('Middleware', function() {
     });
 
     assert.deepEqual(ctx, {
+      _matchedRoute: '/foo/:id/3',
       body: 'body',
       method: 'GET',
       params: { id: 'bar' },
@@ -86,6 +88,7 @@ describe('Middleware', function() {
     });
 
     assert.deepEqual(ctx, {
+      _matchedRoute: undefined,
       method: 'GET',
       params: {},
       next: true,

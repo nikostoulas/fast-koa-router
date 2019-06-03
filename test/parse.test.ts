@@ -20,13 +20,17 @@ describe('Parse', function() {
   });
 
   it('should return routes for get', function() {
-    assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/path', 'get'), { route: [] });
+    assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/path', 'get'), {
+      _matchedRoute: '/path',
+      route: []
+    });
   });
 
   it('should return routes for policy and path with params', function() {
     assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/nested/path/id', 'policy'), {
       route: [],
-      params: { id: 'id' }
+      params: { id: 'id' },
+      _matchedRoute: '/nested/path/:id'
     });
   });
 

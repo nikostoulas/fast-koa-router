@@ -51,21 +51,24 @@ export function handlePathVariables(parsedObj) {
 
 export function getPathMethod(routes, path, method) {
   const params = {};
+  let _matchedRoute = '';
   if (routes[path] && routes[path][method]) {
-    return { route: routes[path][method] };
+    return { route: routes[path][method], _matchedRoute: path };
   } else {
     const parts = path.split('/').filter(x => x);
     let iterator = routes;
     for (const path of parts) {
       if (iterator[`/${path}`]) {
+        _matchedRoute += `/${path}`;
         iterator = iterator[`/${path}`];
       } else if (iterator['/_VAR_']) {
         iterator = iterator['/_VAR_'];
         params[iterator.paramName] = path;
+        _matchedRoute += `/:${iterator.paramName}`;
       } else {
         return {};
       }
     }
-    return { route: iterator[method], params };
+    return { route: iterator[method], params, _matchedRoute };
   }
 }
