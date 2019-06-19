@@ -49,7 +49,10 @@ export function handlePathVariables(parsedObj) {
   return parsedObj;
 }
 
-export function getPathMethod(routes, path, method) {
+export function getPathMethod(routes, path: string, method) {
+  if (path.endsWith('/')) {
+    path = path.substr(0, path.length - 1);
+  }
   const params = {};
   let _matchedRoute = '';
   if (routes[path] && routes[path][method]) {

@@ -13,7 +13,8 @@
     "pretest": "tslint src/*.ts",
     "test": "nyc mocha"
   },
-  "author": "",
+  "author": "Nikos Kostoulas <nikostoulas@gmail.com>",
+  "repository": "nikostoulas/fast-koa-router",
   "license": "ISC",
   "nyc": {
     "include": [

@@ -34,6 +34,14 @@ describe('Parse', function() {
     });
   });
 
+  it('should return routes ignoring ending slash', function() {
+    assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/nested/path/id/', 'policy'), {
+      route: [],
+      params: { id: 'id' },
+      _matchedRoute: '/nested/path/:id'
+    });
+  });
+
   it('should return no route if path does not match', function() {
     assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/nested/path/id/foo', 'policy'), {});
   });
