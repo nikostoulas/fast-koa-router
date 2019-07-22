@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import { routes } from './routes.simple';
 import { routes as routes1 } from './routes.nested';
 import { routes as routes2 } from './routes.paths';
+import { routes as routes3 } from './routes.backslash';
 import { parse, handlePathVariables, getPathMethod } from '../src/parse';
 
 describe('Parse', function() {
@@ -12,6 +13,16 @@ describe('Parse', function() {
 
   it('should handle path variables', function() {
     assert.deepEqual(handlePathVariables(parse(routes)), {
+      '/path': { policy: [], post: [], get: [] },
+      '/nested/path': { policy: [], get: [] },
+      '/nested/path/:id': { policy: [], get: [] },
+      '/nested': { '/path': { '/_VAR_': { paramName: 'id', policy: [], get: [] } } }
+    });
+  });
+
+  it('should remove ending slash', function() {
+    assert.deepEqual(handlePathVariables(parse(routes3)), {
+      '': { get: [] },
       '/path': { policy: [], post: [], get: [] },
       '/nested/path': { policy: [], get: [] },
       '/nested/path/:id': { policy: [], get: [] },
@@ -39,6 +50,13 @@ describe('Parse', function() {
       route: [],
       params: { id: 'id' },
       _matchedRoute: '/nested/path/:id'
+    });
+  });
+
+  it('should return home route ignoring ending slash', function() {
+    assert.deepEqual(getPathMethod(handlePathVariables(parse(routes3)), '/', 'get'), {
+      route: [],
+      _matchedRoute: ''
     });
   });
 

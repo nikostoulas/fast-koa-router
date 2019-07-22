@@ -12,6 +12,9 @@ export function parse(routes, path = '', method = null, parsedObj = {}) {
   if (!routes) {
     return;
   }
+  if (path.endsWith('/')) {
+    path = path.substr(0, path.length - 1);
+  }
   if (Array.isArray(routes) || typeof routes === 'function') {
     parsedObj[path] = { [method]: routes, ...parsedObj[path] };
     return;
