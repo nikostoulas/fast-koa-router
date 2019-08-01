@@ -1,5 +1,4 @@
 import { router } from '../src/middleware';
-import * as assert from 'assert';
 
 describe('Middleware', function() {
   it('route should be called and state should be changed', async function() {
@@ -18,14 +17,7 @@ describe('Middleware', function() {
       (ctx as any).next = true;
     });
 
-    assert.deepEqual(ctx, {
-      _matchedRoute: '/foo/bar/3',
-      body: 'body',
-      method: 'GET',
-      params: {},
-      path: '/foo/bar/3',
-      next: true
-    });
+    snapshot(ctx);
   });
 
   it('routes and policy should be called but not next', async function() {
@@ -55,15 +47,7 @@ describe('Middleware', function() {
       (ctx as any).next = true;
     });
 
-    assert.deepEqual(ctx, {
-      _matchedRoute: '/foo/:id/3',
-      body: 'body',
-      method: 'GET',
-      params: { id: 'bar' },
-      policy: true,
-      state: 'state',
-      path: '/foo/bar/3'
-    });
+    snapshot(ctx);
   });
 
   it('if nothing matches next is called', async function() {
@@ -87,12 +71,6 @@ describe('Middleware', function() {
       (ctx as any).next = true;
     });
 
-    assert.deepEqual(ctx, {
-      _matchedRoute: undefined,
-      method: 'GET',
-      params: {},
-      next: true,
-      path: '/foo/bar/not-found'
-    });
+    snapshot(ctx);
   });
 });

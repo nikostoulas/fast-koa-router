@@ -12,22 +12,11 @@ describe('Parse', function() {
   });
 
   it('should handle path variables', function() {
-    assert.deepEqual(handlePathVariables(parse(routes)), {
-      '/path': { policy: [], post: [], get: [] },
-      '/nested/path': { policy: [], get: [] },
-      '/nested/path/:id': { policy: [], get: [] },
-      '/nested': { '/path': { '/_VAR_': { paramName: 'id', policy: [], get: [] } } }
-    });
+    snapshot(handlePathVariables(parse(routes)));
   });
 
   it('should remove ending slash', function() {
-    assert.deepEqual(handlePathVariables(parse(routes3)), {
-      '': { get: [] },
-      '/path': { policy: [], post: [], get: [] },
-      '/nested/path': { policy: [], get: [] },
-      '/nested/path/:id': { policy: [], get: [] },
-      '/nested': { '/path': { '/_VAR_': { paramName: 'id', policy: [], get: [] } } }
-    });
+    snapshot(handlePathVariables(parse(routes3)));
   });
 
   it('should return routes for get', function() {
