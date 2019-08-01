@@ -1,8 +1,8 @@
-import { handlePathVariables, getPathMethod, parse } from './parse';
+import { handlePathVariables, getPathMethod, parse, addPrefixMiddleware } from './parse';
 export class Router {
   routes: { [key: string]: any };
   constructor(routes) {
-    this.routes = handlePathVariables(parse(routes));
+    this.routes = handlePathVariables(addPrefixMiddleware(parse(routes), routes.prefix));
   }
 
   getMiddlewareAndSetState(ctx) {

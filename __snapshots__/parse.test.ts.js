@@ -1,21 +1,21 @@
 exports['Parse should handle path variables 1'] = {
-  "get": {
-    "/nested/path/:id": {
+  "policy": {
+    "/path": {
       "middleware": []
     },
     "/nested/path": {
       "middleware": []
     },
-    "/path": {
+    "/nested/path/:id": {
       "middleware": []
     },
     "/nested": {
       "/path": {
+        "middleware": [],
         "/_VAR_": {
           "paramName": "id",
           "middleware": []
-        },
-        "middleware": []
+        }
       }
     }
   },
@@ -24,49 +24,46 @@ exports['Parse should handle path variables 1'] = {
       "middleware": []
     }
   },
-  "policy": {
-    "/nested/path/:id": {
+  "get": {
+    "/path": {
       "middleware": []
     },
     "/nested/path": {
       "middleware": []
     },
-    "/path": {
+    "/nested/path/:id": {
       "middleware": []
     },
     "/nested": {
       "/path": {
+        "middleware": [],
         "/_VAR_": {
           "paramName": "id",
           "middleware": []
-        },
-        "middleware": []
+        }
       }
     }
   }
 }
 
 exports['Parse should remove ending slash 1'] = {
-  "get": {
-    "": {
-      "middleware": []
-    },
-    "/nested/path/:id": {
+  "policy": {
+    "/path": {
       "middleware": []
     },
     "/nested/path": {
       "middleware": []
     },
-    "/path": {
+    "/nested/path/:id": {
       "middleware": []
     },
     "/nested": {
       "/path": {
+        "middleware": [],
         "/_VAR_": {
           "paramName": "id",
           "middleware": []
-        },
-        "middleware": []
+        }
       }
     }
   },
@@ -75,24 +72,48 @@ exports['Parse should remove ending slash 1'] = {
       "middleware": []
     }
   },
-  "policy": {
-    "/nested/path/:id": {
+  "get": {
+    "/path": {
       "middleware": []
     },
     "/nested/path": {
       "middleware": []
     },
-    "/path": {
+    "/nested/path/:id": {
+      "middleware": []
+    },
+    "": {
       "middleware": []
     },
     "/nested": {
       "/path": {
+        "middleware": [],
         "/_VAR_": {
           "paramName": "id",
           "middleware": []
-        },
-        "middleware": []
+        }
       }
+    }
+  }
+}
+
+exports['Parse addPrefixMiddleware should add prefix middleware to all matching routes 1'] = {
+  "get": {
+    "/nested/path/:id": {
+      "middleware": [
+        "nestedPrefix",
+        "nestedPathPrefix",
+        "nestedPathParamPrefix"
+      ]
+    },
+    "/nested/path": {
+      "middleware": [
+        "nestedPrefix",
+        "nestedPathPrefix"
+      ]
+    },
+    "/path": {
+      "middleware": []
     }
   }
 }

@@ -19,13 +19,18 @@ export function parse(routes, path = '', method = null, parsedObj = {}) {
     parsedObj[method] = { [path]: { middleware: routes }, ...parsedObj[method] };
     return;
   }
-  Object.entries(routes).forEach(([key, value]) => {
-    if (isHttpMethodOrPolicy(key)) {
-      parse(value, path, key, parsedObj);
-      return;
-    }
-    parse(value, path + key, method, parsedObj);
-  });
+  Object.entries(routes)
+    .reverse()
+    .forEach(([key, value]) => {
+      if (key === 'prefix') {
+        return;
+      }
+      if (isHttpMethodOrPolicy(key)) {
+        parse(value, path, key, parsedObj);
+        return;
+      }
+      parse(value, path + key, method, parsedObj);
+    });
   return parsedObj;
 }
 
@@ -46,6 +51,25 @@ export function handlePathVariables(parsedObj) {
           Object.assign(iterator, value);
         }
         i++;
+      }
+    }
+  }
+  return parsedObj;
+}
+
+export function addPrefixMiddleware(parsedObj, prefixes = {}) {
+  for (let [prefix, m] of Object.entries(prefixes).reverse()) {
+    if (prefix.endsWith('/')) {
+      prefix = prefix.substr(0, prefix.length - 1);
+    }
+    for (const [method, routes] of Object.entries(parsedObj)) {
+      if (method === 'policy') continue;
+      for (const [key, value] of Object.entries(routes)) {
+        const newKey = key.replace(pathVariableRegexp, (a, b) => a.replace(b, '_VAR_'));
+        const newPrefix = prefix.replace(pathVariableRegexp, (a, b) => a.replace(b, '_VAR_'));
+        if (newKey.indexOf(newPrefix) === 0 && value.middleware) {
+          value.middleware.unshift(...(Array.isArray(m) ? m : [m]));
+        }
       }
     }
   }

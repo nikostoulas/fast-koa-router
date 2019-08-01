@@ -3,7 +3,7 @@ import { routes } from './routes.simple';
 import { routes as routes1 } from './routes.nested';
 import { routes as routes2 } from './routes.paths';
 import { routes as routes3 } from './routes.backslash';
-import { parse, handlePathVariables, getPathMethod } from '../src/parse';
+import { parse, handlePathVariables, getPathMethod, addPrefixMiddleware } from '../src/parse';
 
 describe('Parse', function() {
   it('output should be the same with different ways of routes', function() {
@@ -51,5 +51,32 @@ describe('Parse', function() {
 
   it('should return no route if path does not match', function() {
     assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/nested/path/id/foo', 'policy'), {});
+  });
+
+  describe('addPrefixMiddleware', function() {
+    it('should add prefix middleware to all matching routes', function() {
+      snapshot(
+        addPrefixMiddleware(
+          {
+            get: {
+              '/nested/path/:id': {
+                middleware: []
+              },
+              '/nested/path': {
+                middleware: []
+              },
+              '/path': {
+                middleware: []
+              }
+            }
+          },
+          {
+            '/nested': ['nestedPrefix'],
+            '/nested/path': 'nestedPathPrefix',
+            '/nested/path/:param': 'nestedPathParamPrefix'
+          }
+        )
+      );
+    });
   });
 });
