@@ -5,6 +5,7 @@ const routes = require('../routes');
 
 const router = new Router();
 Object.entries(routes).forEach(([path, handler]) => {
+  if (path === 'prefix') return;
   router.get(path, handler.get);
 });
 
