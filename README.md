@@ -96,7 +96,7 @@ app.listen(8080);
 
 ## Policies
 
-Policies are used to add authentication and authorization or any other kind of middleware. It is like all and is executed before the matching route.
+Policies are used to add authentication and authorization or any other kind of middleware. It is like `all` and is executed before the matching route.
 They must call next in order for the actual route to be executed.
 Polices will be executed even if a matching get, post, put, delete, patch is not found
 
