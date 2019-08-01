@@ -5,15 +5,15 @@ export class Router {
     this.routes = handlePathVariables(parse(routes));
   }
 
-  getRouteAndSetState(ctx) {
+  getMiddlewareAndSetState(ctx) {
     const { path, method } = ctx;
-    const { route, params, _matchedRoute } = getPathMethod(this.routes, path, method.toLowerCase());
+    const { middleware, params, _matchedRoute } = getPathMethod(this.routes, path, method.toLowerCase());
     ctx.params = params || {};
     ctx._matchedRoute = _matchedRoute;
-    return route;
+    return middleware;
   }
 
   getPolicy(ctx) {
-    return getPathMethod(this.routes, ctx.path, 'policy').route;
+    return getPathMethod(this.routes, ctx.path, 'policy').middleware;
   }
 }

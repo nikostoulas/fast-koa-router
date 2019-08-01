@@ -16,7 +16,7 @@ export function parse(routes, path = '', method = null, parsedObj = {}) {
     path = path.substr(0, path.length - 1);
   }
   if (Array.isArray(routes) || typeof routes === 'function') {
-    parsedObj[path] = { [method]: routes, ...parsedObj[path] };
+    parsedObj[method] = { [path]: { middleware: routes }, ...parsedObj[method] };
     return;
   }
   Object.entries(routes).forEach(([key, value]) => {
@@ -31,10 +31,10 @@ export function parse(routes, path = '', method = null, parsedObj = {}) {
 
 const pathVariableRegexp = /\/?(\:.*?)(?:\/|$)/g;
 export function handlePathVariables(parsedObj) {
-  for (const [key, value] of Object.entries(parsedObj)) {
-    if (pathVariableRegexp.test(key)) {
+  for (const routes of Object.values(parsedObj)) {
+    for (const [key, value] of Object.entries(routes)) {
       const newKey = key.replace(pathVariableRegexp, (a, b) => a.replace(b, '_VAR_'));
-      let iterator = parsedObj;
+      let iterator = routes;
       const parts = newKey.split('/').filter(x => x);
       const oldParts = key.split('/').filter(x => x);
       let i = 0;
@@ -43,7 +43,7 @@ export function handlePathVariables(parsedObj) {
         if (path === '_VAR_') iterator[`/${path}`].paramName = oldParts[i].substring(1);
         iterator = iterator[`/${path}`];
         if (i === parts.length - 1) {
-          Object.assign(iterator, parsedObj[key]);
+          Object.assign(iterator, value);
         }
         i++;
       }
@@ -58,8 +58,9 @@ export function getPathMethod(routes, path: string, method) {
   }
   const params = {};
   let _matchedRoute = '';
-  if (routes[path] && routes[path][method]) {
-    return { route: routes[path][method], _matchedRoute: path };
+  routes = routes[method] || {};
+  if (routes[path]) {
+    return { middleware: routes[path].middleware, _matchedRoute: path };
   } else {
     const parts = path.split('/').filter(x => x);
     let iterator = routes;
@@ -75,6 +76,6 @@ export function getPathMethod(routes, path: string, method) {
         return {};
       }
     }
-    return { route: iterator[method], params, _matchedRoute };
+    return { middleware: iterator.middleware, params, _matchedRoute };
   }
 }

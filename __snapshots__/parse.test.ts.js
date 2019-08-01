@@ -1,51 +1,97 @@
 exports['Parse should handle path variables 1'] = {
-  "/path": {
-    "policy": [],
-    "post": [],
-    "get": []
-  },
-  "/nested/path": {
-    "policy": [],
-    "get": []
-  },
-  "/nested/path/:id": {
-    "policy": [],
-    "get": []
-  },
-  "/nested": {
+  "get": {
+    "/nested/path/:id": {
+      "middleware": []
+    },
+    "/nested/path": {
+      "middleware": []
+    },
     "/path": {
-      "/_VAR_": {
-        "paramName": "id",
-        "policy": [],
-        "get": []
+      "middleware": []
+    },
+    "/nested": {
+      "/path": {
+        "/_VAR_": {
+          "paramName": "id",
+          "middleware": []
+        },
+        "middleware": []
+      }
+    }
+  },
+  "post": {
+    "/path": {
+      "middleware": []
+    }
+  },
+  "policy": {
+    "/nested/path/:id": {
+      "middleware": []
+    },
+    "/nested/path": {
+      "middleware": []
+    },
+    "/path": {
+      "middleware": []
+    },
+    "/nested": {
+      "/path": {
+        "/_VAR_": {
+          "paramName": "id",
+          "middleware": []
+        },
+        "middleware": []
       }
     }
   }
 }
 
 exports['Parse should remove ending slash 1'] = {
-  "/path": {
-    "policy": [],
-    "post": [],
-    "get": []
-  },
-  "/nested/path": {
-    "policy": [],
-    "get": []
-  },
-  "/nested/path/:id": {
-    "policy": [],
-    "get": []
-  },
-  "": {
-    "get": []
-  },
-  "/nested": {
+  "get": {
+    "": {
+      "middleware": []
+    },
+    "/nested/path/:id": {
+      "middleware": []
+    },
+    "/nested/path": {
+      "middleware": []
+    },
     "/path": {
-      "/_VAR_": {
-        "paramName": "id",
-        "policy": [],
-        "get": []
+      "middleware": []
+    },
+    "/nested": {
+      "/path": {
+        "/_VAR_": {
+          "paramName": "id",
+          "middleware": []
+        },
+        "middleware": []
+      }
+    }
+  },
+  "post": {
+    "/path": {
+      "middleware": []
+    }
+  },
+  "policy": {
+    "/nested/path/:id": {
+      "middleware": []
+    },
+    "/nested/path": {
+      "middleware": []
+    },
+    "/path": {
+      "middleware": []
+    },
+    "/nested": {
+      "/path": {
+        "/_VAR_": {
+          "paramName": "id",
+          "middleware": []
+        },
+        "middleware": []
       }
     }
   }

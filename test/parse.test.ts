@@ -22,13 +22,13 @@ describe('Parse', function() {
   it('should return routes for get', function() {
     assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/path', 'get'), {
       _matchedRoute: '/path',
-      route: []
+      middleware: []
     });
   });
 
   it('should return routes for policy and path with params', function() {
     assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/nested/path/id', 'policy'), {
-      route: [],
+      middleware: [],
       params: { id: 'id' },
       _matchedRoute: '/nested/path/:id'
     });
@@ -36,7 +36,7 @@ describe('Parse', function() {
 
   it('should return routes ignoring ending slash', function() {
     assert.deepEqual(getPathMethod(handlePathVariables(parse(routes)), '/nested/path/id/', 'policy'), {
-      route: [],
+      middleware: [],
       params: { id: 'id' },
       _matchedRoute: '/nested/path/:id'
     });
@@ -44,7 +44,7 @@ describe('Parse', function() {
 
   it('should return home route ignoring ending slash', function() {
     assert.deepEqual(getPathMethod(handlePathVariables(parse(routes3)), '/', 'get'), {
-      route: [],
+      middleware: [],
       _matchedRoute: ''
     });
   });
