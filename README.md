@@ -30,7 +30,7 @@ const routes = {
     }
   },
   prefix: {
-    '/': async function(ctx, next) {}
+    '/': async function(ctx, next) {} // / matches all routes
   }
 };
 
@@ -49,7 +49,7 @@ const routes = {
     '/path/:id': { get: async function(ctx, next) {}, policy: async function(ctx, next) {} }
   },
   prefix: {
-    '/': async function(ctx, next) {}
+    '/': async function(ctx, next) {} // / matches all routes
   }
 };
 
@@ -70,7 +70,7 @@ const routes = {
     '/nested/path/:id': async function(ctx, next) {}
   },
   prefix: {
-    '/': async function(ctx, next) {}
+    '/': async function(ctx, next) {} // / matches all routes
   }
 };
 ```
@@ -98,12 +98,14 @@ app.listen(8080);
 
 Policies are used to add authentication and authorization or any other kind of middleware. It is like `all` and is executed before the matching route.
 They must call next in order for the actual route to be executed.
-Polices will be executed even if a matching get, post, put, delete, patch is not found
+Policies will be executed even if a matching get, post, put, delete, patch is not found
+Policies are executed before anything else.
 
-## Prefix
+## Prefixes
 Prefixes are also used to add middleware. Unlike policies they will only be executed if a matching 
 get, post, put, delete or patch is found. They are convenient to add authentication or authorization in many paths that start with a prefix eg: /api/v1
 
+Prefixes are executed after policies and before other middleware.
 Note than both in prefix and policy middleware ctx.params and ctx._matchedRoute are available.
 
 
