@@ -104,7 +104,7 @@ Polices will be executed even if a matching get, post, put, delete, patch is not
 Prefixes are also used to add middleware. Unlike policies they will only be executed if a matching 
 get, post, put, delete or patch is found. They are convenient to add authentication or authorization in many paths that start with a prefix eg: /api/v1
 
-Note than both in prefix and policy middleware ctx.params and ctx._matchedRoute is available.
+Note than both in prefix and policy middleware ctx.params and ctx._matchedRoute are available.
 
 
 ## Fast
