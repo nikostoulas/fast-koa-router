@@ -9,5 +9,8 @@ export const routes = {
   '/nested': {
     '/path': { get: actions, policy: actions },
     '/path/:id': { get: actions, policy: actions }
+  },
+  prefix: {
+    '/path': 'path'
   }
 };

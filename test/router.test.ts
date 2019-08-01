@@ -15,7 +15,7 @@ describe('Router', function() {
 
   it('gets method and sets state', function() {
     const ctx = { path: '/nested/path/10', method: 'GET' };
-    const route = router.getRouteAndSetState(ctx);
+    const route = router.getMiddlewareAndSetState(ctx);
     assert.deepEqual(route, []);
     assert.deepEqual((ctx as any).params, { id: '10' });
   });

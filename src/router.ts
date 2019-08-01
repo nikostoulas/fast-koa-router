@@ -1,19 +1,19 @@
-import { handlePathVariables, getPathMethod, parse } from './parse';
+import { handlePathVariables, getPathMethod, parse, addPrefixMiddleware } from './parse';
 export class Router {
   routes: { [key: string]: any };
   constructor(routes) {
-    this.routes = handlePathVariables(parse(routes));
+    this.routes = handlePathVariables(addPrefixMiddleware(parse(routes), routes.prefix));
   }
 
-  getRouteAndSetState(ctx) {
+  getMiddlewareAndSetState(ctx) {
     const { path, method } = ctx;
-    const { route, params, _matchedRoute } = getPathMethod(this.routes, path, method.toLowerCase());
+    const { middleware, params, _matchedRoute } = getPathMethod(this.routes, path, method.toLowerCase());
     ctx.params = params || {};
     ctx._matchedRoute = _matchedRoute;
-    return route;
+    return middleware;
   }
 
   getPolicy(ctx) {
-    return getPathMethod(this.routes, ctx.path, 'policy').route;
+    return getPathMethod(this.routes, ctx.path, 'policy').middleware;
   }
 }

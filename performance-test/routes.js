@@ -9,9 +9,14 @@ const routes = {
     get: ctx => {
       ctx.body = 'OK';
     }
+  },
+  prefix: {
+    '/': async (ctx, next) => {
+      await next();
+    }
   }
 };
-for (let route = 0; route <= 50; route++) {
+for (let route = 0; route <= 1000; route++) {
   routes[`/api/v1/${route}`] = actions;
   routes[`/api/v1/${route}/:id`] = actions;
 }
