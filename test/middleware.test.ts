@@ -38,7 +38,8 @@ describe('Middleware', function() {
         '/foo/bar/3': async function(ctx, next) {
           (ctx as any).policy = true;
           await next();
-        }
+        },
+        '/foo/bar/:id': async function(ctx, next) {}
       }
     };
 
