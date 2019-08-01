@@ -17,5 +17,8 @@ export const routes = {
       '/path': actions,
       '/path/:id': actions
     }
+  },
+  prefix: {
+    '/path': 'path'
   }
 };

@@ -13,5 +13,8 @@ export const routes = {
     '/path': actions,
     '/nested/path': actions,
     '/nested/path/:id': actions
+  },
+  prefix: {
+    '/path': 'path'
   }
 };

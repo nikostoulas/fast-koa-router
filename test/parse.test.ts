@@ -54,6 +54,24 @@ describe('Parse', function() {
   });
 
   describe('addPrefixMiddleware', function() {
+    it('should handle path variables', function() {
+      snapshot(handlePathVariables(addPrefixMiddleware(parse(routes), routes.prefix)));
+    });
+
+    it('should remove ending slash', function() {
+      snapshot(handlePathVariables(addPrefixMiddleware(parse(routes3), routes3.prefix)));
+    });
+
+    it('should return routes for get', function() {
+      assert.deepEqual(
+        getPathMethod(handlePathVariables(addPrefixMiddleware(parse(routes), routes.prefix)), '/path', 'get'),
+        {
+          _matchedRoute: '/path',
+          middleware: ['path']
+        }
+      );
+    });
+
     it('should add prefix middleware to all matching routes', function() {
       snapshot(
         addPrefixMiddleware(

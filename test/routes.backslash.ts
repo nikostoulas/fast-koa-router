@@ -1,18 +1,19 @@
-const actions = [];
-
 export const routes = {
   get: {
-    '/path/': actions,
-    '/nested/path/': actions,
-    '/nested/path/:id/': actions,
-    '/': actions
+    '/path/': [],
+    '/nested/path/': [],
+    '/nested/path/:id/': [],
+    '/': []
   },
   post: {
-    '/path/': actions
+    '/path/': []
   },
   policy: {
-    '/path/': actions,
-    '/nested/path/': actions,
-    '/nested/path/:id/': actions
+    '/path/': [],
+    '/nested/path/': [],
+    '/nested/path/:id/': []
+  },
+  prefix: {
+    '/path': 'path'
   }
 };

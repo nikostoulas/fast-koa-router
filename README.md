@@ -28,6 +28,9 @@ const routes = {
       '/path': async function(ctx, next) {},
       '/path/:id': async function(ctx, next) {}
     }
+  },
+  prefix: {
+    '/': async function(ctx, next) {}
   }
 };
 
@@ -44,6 +47,9 @@ const routes = {
   '/nested': {
     '/path': { get: async function(ctx, next) {}, policy: async function(ctx, next) {} },
     '/path/:id': { get: async function(ctx, next) {}, policy: async function(ctx, next) {} }
+  },
+  prefix: {
+    '/': async function(ctx, next) {}
   }
 };
 
@@ -62,6 +68,9 @@ const routes = {
     '/path': async function(ctx, next) {},
     '/nested/path': async function(ctx, next) {},
     '/nested/path/:id': async function(ctx, next) {}
+  },
+  prefix: {
+    '/': async function(ctx, next) {}
   }
 };
 ```
@@ -71,7 +80,6 @@ Supports
 - put
 - post
 - get
-- post
 - delete
 - patch
 
@@ -86,14 +94,20 @@ app.use(router(routes));
 app.listen(8080);
 ```
 
-
 ## Policies
 
-Policies are used for authentication and authorization.
+Policies are used to add authentication and authorization or any other kind of middleware. It is like all and is executed before the matching route.
 They must call next in order for the actual route to be executed.
+Polices will be executed even if a matching get, post, put, delete, patch is not found
+
+## Prefix
+Prefixes are also used to add middleware. Unlike policies they will only be executed if a matching 
+get, post, put, delete or patch is found. They are convenient to add authentication or authorization in many paths that start with a prefix eg: /api/v1
+
+Note than both in prefix and policy middleware ctx.params and ctx._matchedRoute is available.
 
 
 ## Fast
 
-The path matching is pretty simple. Unlike other middlewares not all routes are checked so performance does not degrade with routes size. 
+The path matching is pretty simple. Unlike other middlewares not all routes are checked so performance does not degrade with routes size.
 However complex regex matching is not supported.

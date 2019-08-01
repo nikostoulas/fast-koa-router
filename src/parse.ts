@@ -16,7 +16,10 @@ export function parse(routes, path = '', method = null, parsedObj = {}) {
     path = path.substr(0, path.length - 1);
   }
   if (Array.isArray(routes) || typeof routes === 'function') {
-    parsedObj[method] = { [path]: { middleware: routes }, ...parsedObj[method] };
+    parsedObj[method] = {
+      [path]: { middleware: Array.isArray(routes) ? [...routes] : [routes] },
+      ...parsedObj[method]
+    };
     return;
   }
   Object.entries(routes)
