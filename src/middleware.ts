@@ -3,7 +3,7 @@ import { Router } from './router';
 const makeArray = args => (Array.isArray(args) ? args : [args]);
 export const router = routes => {
   const router = new Router(routes);
-  return async (ctx, next) => {
+  return async function fastKoaRouter(ctx, next) {
     const policy = router.getPolicy(ctx);
     const middleware = router.getMiddlewareAndSetState(ctx);
     const middlewares = [];
