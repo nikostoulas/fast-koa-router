@@ -144,4 +144,42 @@ describe('Parse', function() {
       );
     });
   });
+
+  describe('route that matches every path', function() {
+    it('should fallback to star routes', function() {
+      let routes = handlePathVariables(
+        addPrefixMiddleware(
+          parse({
+            get: {
+              '/path': ['middleware'],
+              '/path/1': ['one'],
+              '/path/*': ['star'],
+              '/*': ['initialStar']
+            }
+          }),
+          { '/path': 'prefix' }
+        )
+      );
+      assert.deepEqual(getPathMethod(routes, '/path/1', 'get'), {
+        _matchedRoute: '/path/1',
+        middleware: ['prefix', 'one']
+      });
+
+      assert.deepEqual(getPathMethod(routes, '/path/foo', 'get'), {
+        _matchedRoute: '/path/*',
+        middleware: ['prefix', 'star']
+      });
+
+      assert.deepEqual(getPathMethod(routes, '/path/1/2', 'get'), {
+        _matchedRoute: '/path/*',
+        middleware: ['prefix', 'star']
+      });
+
+      assert.deepEqual(getPathMethod(routes, '/', 'get'), {
+        _matchedRoute: '/*',
+        middleware: ['initialStar'],
+        params: {}
+      });
+    });
+  });
 });

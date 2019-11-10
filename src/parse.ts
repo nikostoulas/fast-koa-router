@@ -38,10 +38,12 @@ export function parse(routes, path = '', method = null, parsedObj = {}) {
 }
 
 const pathVariableRegexp = /\/?(\:.*?)(?:\/|$)/g;
+const starRegexp = /\/?(\*)(?:\/|$)/g;
 export function handlePathVariables(parsedObj) {
   for (const routes of Object.values(parsedObj)) {
     for (const [key, value] of Object.entries(routes)) {
-      const newKey = key.replace(pathVariableRegexp, (a, b) => a.replace(b, '_VAR_'));
+      let newKey = key.replace(pathVariableRegexp, (a, b) => a.replace(b, '_VAR_'));
+      newKey = newKey.replace(starRegexp, (a, b) => a.replace(b, '_STAR_'));
       let iterator = routes;
       const parts = newKey.split('/').filter(x => x);
       const oldParts = key.split('/').filter(x => x);
@@ -96,7 +98,17 @@ export function getPathMethod(routes, path: string, method) {
   } else {
     const parts = path.split('/').filter(x => x);
     let iterator = routes;
+    let middleware;
+    let lastMiddlewareRoute;
+    if (parts.length === 0 && iterator['/_STAR_']) {
+      iterator = iterator['/_STAR_'];
+      _matchedRoute += '/*';
+    }
     for (const path of parts) {
+      if (iterator['/_STAR_']) {
+        lastMiddlewareRoute = _matchedRoute + '/*';
+        middleware = iterator['/_STAR_'].middleware;
+      }
       if (iterator[`/${path}`]) {
         _matchedRoute += `/${path}`;
         iterator = iterator[`/${path}`];
@@ -104,7 +116,13 @@ export function getPathMethod(routes, path: string, method) {
         iterator = iterator['/_VAR_'];
         params[iterator.paramName] = path;
         _matchedRoute += `/:${iterator.paramName}`;
+      } else if (iterator['/_STAR_'] && iterator['/_STAR_'].middleware) {
+        _matchedRoute += '/*';
+        return { middleware: iterator['/_STAR_'].middleware, _matchedRoute };
       } else {
+        if (middleware) {
+          return { middleware, _matchedRoute: lastMiddlewareRoute };
+        }
         return {};
       }
     }

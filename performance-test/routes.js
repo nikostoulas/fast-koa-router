@@ -10,6 +10,11 @@ const routes = {
       ctx.body = 'OK';
     }
   },
+  '/*': {
+    get: ctx => {
+      ctx.body = 'Nothing here';
+    }
+  },
   prefix: {
     '/': async (ctx, next) => {
       await next();

@@ -94,6 +94,30 @@ app.use(router(routes));
 app.listen(8080);
 ```
 
+## Star symbol
+
+Sometimes you need to have a fallback if no route matches with the requested url. You can have routes that end with a star eg:
+
+```js
+const routes = {
+  get: {
+    '/path': async function(ctx, next) {},
+    '/path/subpath': async function(ctx, next) {},
+    '/path/*': async function(ctx, next) {
+      ctx.body='Nothing in /path matches this request';
+      ctx.status=404;
+    },
+    '/*': async function(ctx, next) {
+      ctx.body='Nothing here';
+      ctx.status=404;
+    }
+  }
+```
+
+Note that star symboly is only supported after version 1.1.0 and only when used in the end of a route.
+
+There is no reason to use it in prefix routes. Prefix routes will always match get, post, delete, patch, put urls if they use the same prefix.
+
 ## Policies
 
 Policies are used to add authentication and authorization or any other kind of middleware. It is like `all` and is executed before the matching route.
@@ -102,12 +126,12 @@ Policies will be executed even if a matching get, post, put, delete, patch is no
 Policies are executed before anything else.
 
 ## Prefixes
-Prefixes are also used to add middleware. Unlike policies they will only be executed if a matching 
+
+Prefixes are also used to add middleware. Unlike policies they will only be executed if a matching
 get, post, put, delete or patch is found. They are convenient to add authentication or authorization in many paths that start with a prefix eg: /api/v1
 
 Prefixes are executed after policies and before other middleware.
-Note than both in prefix and policy middleware ctx.params and ctx._matchedRoute are available.
-
+Note than both in prefix and policy middleware ctx.params and ctx.\_matchedRoute are available.
 
 ## Fast
 
