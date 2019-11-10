@@ -62,7 +62,9 @@ export function handlePathVariables(parsedObj) {
 
 export function addPrefixMiddleware(parsedObj, prefixes = {}) {
   for (let [prefix, m] of Object.entries(prefixes).reverse()) {
+    let endsWithSlash = false;
     if (prefix.endsWith('/')) {
+      endsWithSlash = true;
       prefix = prefix.substr(0, prefix.length - 1);
     }
     for (const [method, routes] of Object.entries(parsedObj)) {
@@ -71,6 +73,9 @@ export function addPrefixMiddleware(parsedObj, prefixes = {}) {
         const newKey = key.replace(pathVariableRegexp, (a, b) => a.replace(b, '_VAR_'));
         const newPrefix = prefix.replace(pathVariableRegexp, (a, b) => a.replace(b, '_VAR_'));
         if (newKey.indexOf(newPrefix) === 0 && value.middleware) {
+          if (endsWithSlash && newKey.length !== newPrefix.length && newKey[newPrefix.length] !== '/') {
+            continue;
+          }
           value.middleware.unshift(...(Array.isArray(m) ? m : [m]));
         }
       }

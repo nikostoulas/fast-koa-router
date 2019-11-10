@@ -72,6 +72,53 @@ describe('Parse', function() {
       );
     });
 
+    it('should not add if prefix ends with /', function() {
+      assert.deepEqual(
+        getPathMethod(
+          handlePathVariables(
+            addPrefixMiddleware(
+              parse({
+                get: {
+                  '/path': ['middleware']
+                }
+              }),
+              { '/pa/': 'prefix' }
+            )
+          ),
+          '/path',
+          'get'
+        ),
+        {
+          _matchedRoute: '/path',
+          middleware: ['middleware']
+        }
+      );
+    });
+
+    // tslint:disable-next-line: quotemark
+    it("should add prefix if it doesn't end with /", function() {
+      assert.deepEqual(
+        getPathMethod(
+          handlePathVariables(
+            addPrefixMiddleware(
+              parse({
+                get: {
+                  '/path': ['middleware']
+                }
+              }),
+              { '/pa': 'prefix' }
+            )
+          ),
+          '/path',
+          'get'
+        ),
+        {
+          _matchedRoute: '/path',
+          middleware: ['prefix', 'middleware']
+        }
+      );
+    });
+
     it('should add prefix middleware to all matching routes', function() {
       snapshot(
         addPrefixMiddleware(
