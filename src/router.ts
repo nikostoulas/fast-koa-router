@@ -9,6 +9,7 @@ export class Router {
     const { path, method } = ctx;
     const { middleware, params, _matchedRoute } = getPathMethod(this.routes, path, method.toLowerCase());
     ctx.params = params || {};
+    ctx.matched = [];
     ctx._matchedRoute = _matchedRoute;
     return middleware;
   }
