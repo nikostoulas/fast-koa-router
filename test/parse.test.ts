@@ -72,6 +72,53 @@ describe('Parse', function() {
       );
     });
 
+    it('should not add if prefix ends with /', function() {
+      assert.deepEqual(
+        getPathMethod(
+          handlePathVariables(
+            addPrefixMiddleware(
+              parse({
+                get: {
+                  '/path': ['middleware']
+                }
+              }),
+              { '/pa/': 'prefix' }
+            )
+          ),
+          '/path',
+          'get'
+        ),
+        {
+          _matchedRoute: '/path',
+          middleware: ['middleware']
+        }
+      );
+    });
+
+    // tslint:disable-next-line: quotemark
+    it("should add prefix if it doesn't end with /", function() {
+      assert.deepEqual(
+        getPathMethod(
+          handlePathVariables(
+            addPrefixMiddleware(
+              parse({
+                get: {
+                  '/path': ['middleware']
+                }
+              }),
+              { '/pa': 'prefix' }
+            )
+          ),
+          '/path',
+          'get'
+        ),
+        {
+          _matchedRoute: '/path',
+          middleware: ['prefix', 'middleware']
+        }
+      );
+    });
+
     it('should add prefix middleware to all matching routes', function() {
       snapshot(
         addPrefixMiddleware(
@@ -95,6 +142,69 @@ describe('Parse', function() {
           }
         )
       );
+    });
+  });
+
+  describe('route that matches every path', function() {
+    it('should fallback to star routes', function() {
+      let routes = handlePathVariables(
+        addPrefixMiddleware(
+          parse({
+            get: {
+              '/path': ['middleware'],
+              '/path/1': ['one'],
+              '/path/1/3/foo': ['foo'],
+              '/path/*': ['star'],
+              '/*': ['initialStar']
+            }
+          }),
+          { '/path': 'prefix' }
+        )
+      );
+      assert.deepEqual(getPathMethod(routes, '/path/1', 'get'), {
+        _matchedRoute: '/path/1',
+        middleware: ['prefix', 'one']
+      });
+
+      assert.deepEqual(getPathMethod(routes, '/path/foo', 'get'), {
+        _matchedRoute: '/path/*',
+        middleware: ['prefix', 'star']
+      });
+
+      assert.deepEqual(getPathMethod(routes, '/path/1/3', 'get'), {
+        _matchedRoute: '/path/*',
+        middleware: ['prefix', 'star']
+      });
+
+      assert.deepEqual(getPathMethod(routes, '/path/1/2', 'get'), {
+        _matchedRoute: '/path/*',
+        middleware: ['prefix', 'star']
+      });
+
+      assert.deepEqual(getPathMethod(routes, '/', 'get'), {
+        _matchedRoute: '/*',
+        middleware: ['initialStar'],
+        params: {}
+      });
+    });
+
+    it('should fallback to star routes', function() {
+      let routes = handlePathVariables(
+        addPrefixMiddleware(
+          parse({
+            get: {
+              '/path': ['middleware'],
+              '/path/1': ['one'],
+              '/path/1/3/foo': ['foo'],
+              '/path2/1/3/foo': ['foo'],
+              '/path/*': ['star']
+            }
+          }),
+          { '/path': 'prefix' }
+        )
+      );
+
+      assert.deepEqual(getPathMethod(routes, '/path2/1', 'get'), {});
     });
   });
 });

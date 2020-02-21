@@ -10,4 +10,4 @@ Object.entries(routes).forEach(([path, handler]) => {
 });
 
 app.use(router.routes());
-app.listen(8080);
+app.listen(8080, () => console.log('started'));
