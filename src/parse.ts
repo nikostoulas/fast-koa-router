@@ -16,10 +16,8 @@ export function parse(routes, path = '', method = null, parsedObj = {}) {
     path = path.substr(0, path.length - 1);
   }
   if (Array.isArray(routes) || typeof routes === 'function') {
-    parsedObj[method] = {
-      [path]: { middleware: Array.isArray(routes) ? [...routes] : [routes] },
-      ...parsedObj[method]
-    };
+    parsedObj[method] = parsedObj[method] || {};
+    parsedObj[method][path] = { middleware: Array.isArray(routes) ? [...routes] : [routes] };
     return;
   }
   Object.entries(routes)
@@ -49,7 +47,7 @@ export function handlePathVariables(parsedObj) {
       const oldParts = key.split('/').filter(x => x);
       let i = 0;
       for (const path of parts) {
-        iterator[`/${path}`] = { ...iterator[`/${path}`] };
+        iterator[`/${path}`] = iterator[`/${path}`] || {};
         if (path === '_VAR_') iterator[`/${path}`].paramName = oldParts[i].substring(1);
         iterator = iterator[`/${path}`];
         if (i === parts.length - 1) {
@@ -126,6 +124,12 @@ export function getPathMethod(routes, path: string, method) {
         return {};
       }
     }
-    return { middleware: iterator.middleware, params, _matchedRoute };
+    if (iterator.middleware) {
+      return { middleware: iterator.middleware, params, _matchedRoute };
+    } else if (middleware) {
+      return { middleware, _matchedRoute: lastMiddlewareRoute };
+    } else {
+      return {};
+    }
   }
 }

@@ -153,6 +153,7 @@ describe('Parse', function() {
             get: {
               '/path': ['middleware'],
               '/path/1': ['one'],
+              '/path/1/3/foo': ['foo'],
               '/path/*': ['star'],
               '/*': ['initialStar']
             }
@@ -170,6 +171,11 @@ describe('Parse', function() {
         middleware: ['prefix', 'star']
       });
 
+      assert.deepEqual(getPathMethod(routes, '/path/1/3', 'get'), {
+        _matchedRoute: '/path/*',
+        middleware: ['prefix', 'star']
+      });
+
       assert.deepEqual(getPathMethod(routes, '/path/1/2', 'get'), {
         _matchedRoute: '/path/*',
         middleware: ['prefix', 'star']
@@ -180,6 +186,25 @@ describe('Parse', function() {
         middleware: ['initialStar'],
         params: {}
       });
+    });
+
+    it('should fallback to star routes', function() {
+      let routes = handlePathVariables(
+        addPrefixMiddleware(
+          parse({
+            get: {
+              '/path': ['middleware'],
+              '/path/1': ['one'],
+              '/path/1/3/foo': ['foo'],
+              '/path2/1/3/foo': ['foo'],
+              '/path/*': ['star']
+            }
+          }),
+          { '/path': 'prefix' }
+        )
+      );
+
+      assert.deepEqual(getPathMethod(routes, '/path2/1', 'get'), {});
     });
   });
 });
