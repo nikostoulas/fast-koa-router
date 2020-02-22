@@ -184,3 +184,4 @@ Metrics have been taken using ab:
 ab -k -n 1000000 -c 100 localhost:8080/api/v1/1/2
 ```
 
+![image](https://user-images.githubusercontent.com/1398718/75097736-eace0300-55b6-11ea-850e-6c8c62593c07.png)
