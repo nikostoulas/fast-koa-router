@@ -10,11 +10,6 @@ const routes = {
       ctx.body = 'OK';
     }
   },
-  '/*': {
-    get: ctx => {
-      ctx.body = 'Nothing here';
-    }
-  },
   prefix: {
     '/': async (ctx, next) => {
       await next();
@@ -22,9 +17,17 @@ const routes = {
   }
 };
 
-for (let route = 0; route <= 300; route++) {
+// This is a way to create many routes for performance testing.
+for (let route = 0; route <= 10000; route++) {
   routes[`/api/v1/${route}`] = actions;
   routes[`/api/v1/${route}/:id`] = actions;
 }
+
+// for @koa/route order of routes matters.
+routes['/*'] = {
+  get: ctx => {
+    ctx.body = 'Nothing here';
+  }
+};
 
 module.exports = routes;

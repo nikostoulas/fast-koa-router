@@ -1,4 +1,5 @@
 import { router } from '../src/middleware';
+import * as assert from 'assert';
 
 describe('Middleware', function() {
   it('route should be called and state should be changed', async function() {
@@ -110,5 +111,76 @@ describe('Middleware', function() {
     });
 
     snapshot(ctx);
+  });
+
+  it('it also exports routes', async function() {
+    const ctx = { path: '/foo/bar/not-found', method: 'GET' };
+    const r = {
+      get: {
+        '/foo/:id/3': async function(ctx) {
+          ctx.body = await 'body';
+        }
+      },
+      policy: {
+        '/foo/bar/3': async function(ctx, next) {
+          (ctx as any).policy = true;
+          await next();
+        }
+      }
+    };
+
+    const middleware = router(r);
+
+    snapshot(middleware.routes);
+  });
+
+  it('it also exports match', async function() {
+    const ctx = { path: '/foo/bar/not-found', method: 'GET' };
+    const r = {
+      get: {
+        '/foo/:id/3': async function foo(ctx) {
+          ctx.body = await 'body';
+        }
+      },
+      policy: {
+        '/foo/bar/3': async function(ctx, next) {
+          (ctx as any).policy = true;
+          await next();
+        }
+      }
+    };
+
+    const middleware = router(r);
+    assert.deepEqual(middleware.matching('/foo/1/3'), {
+      ctx: {
+        _matchedRoute: '/foo/:id/3',
+        method: 'GET',
+        params: {
+          id: '1'
+        },
+        path: '/foo/1/3'
+      },
+      middlewares: [r.get['/foo/:id/3']]
+    });
+    assert.deepEqual(middleware.matching('/foo/bar/3'), {
+      ctx: {
+        _matchedRoute: '/foo/:id/3',
+        method: 'GET',
+        params: {
+          id: 'bar'
+        },
+        path: '/foo/bar/3'
+      },
+      middlewares: [r.policy['/foo/bar/3'], r.get['/foo/:id/3']]
+    });
+    assert.deepEqual(middleware.matching('/foo/test'), {
+      ctx: {
+        _matchedRoute: undefined,
+        method: 'GET',
+        params: {},
+        path: '/foo/test'
+      },
+      middlewares: []
+    });
   });
 });
