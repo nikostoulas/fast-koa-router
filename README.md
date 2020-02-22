@@ -1,5 +1,7 @@
 # Fast Koa Router
 
+It uses a simple routes json object. Routes order does not matter. Performance does not degrade with routes length.
+
 ## Installation
 
 `npm install fast-koa-router`
@@ -94,6 +96,31 @@ app.use(router(routes));
 app.listen(8080);
 ```
 
+### Debugging in console
+
+```js
+node
+> const { router } = require('fast-koa-router');
+> const route = router(routes);
+> route.matching('/nested/path');
+{
+  ctx: {
+    path: '/nested/path',
+    method: 'GET',
+    params: {},
+    _matchedRoute: '/nested/path'
+  },
+  middlewares: [
+    [AsyncFunction: '/nested/path'], // policy
+    [AsyncFunction: '/'],            // prefix route
+    [AsyncFunction: '/nested/path']  // get route
+  ]
+}
+> route.routes 
+// contains the compiled routes
+```
+
+
 ## Star symbol
 
 Sometimes you need to have a fallback if no route matches with the requested url. You can have routes that end with a star eg:
@@ -114,7 +141,7 @@ const routes = {
   }
 ```
 
-Note that star symboly is only supported after version 1.1.0 and only when used in the end of a route.
+Note that star symbol is only supported after version 1.1.0 and only when used in the end of a route.
 
 There is no reason to use it in prefix routes. Prefix routes will always match get, post, delete, patch, put urls if they use the same prefix.
 
@@ -137,3 +164,24 @@ Note than both in prefix and policy middleware ctx.params and ctx.\_matchedRoute
 
 The path matching is pretty simple. Unlike other middlewares not all routes are checked so performance does not degrade with routes size.
 However complex regex matching is not supported.
+
+## Benchmark
+
+Performances tests existing in this codebase and comparing fast-koa-router with @koa/router.
+
+To start fast-koa-router example:
+```
+node performance-test/router/server.js
+```
+
+To start @koa/router example:
+```
+node performance-test/koa-router/server.js 
+```
+
+Metrics have been taken using ab: 
+```
+ab -k -n 1000000 -c 100 localhost:8080/api/v1/1/2
+```
+
+![image](https://user-images.githubusercontent.com/1398718/75097736-eace0300-55b6-11ea-850e-6c8c62593c07.png)

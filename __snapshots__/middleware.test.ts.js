@@ -38,3 +38,39 @@ exports['Middleware routes and policy and prefix should be called but not next 1
   "body": "body",
   "state": "state"
 }
+
+exports['Middleware it also exports routes 1'] = {
+  "policy": {
+    "/foo/bar/3": {
+      "middleware": [
+        null
+      ]
+    },
+    "/foo": {
+      "/bar": {
+        "/3": {
+          "middleware": [
+            null
+          ]
+        }
+      }
+    }
+  },
+  "get": {
+    "/foo/:id/3": {
+      "middleware": [
+        null
+      ]
+    },
+    "/foo": {
+      "/_VAR_": {
+        "paramName": "id",
+        "/3": {
+          "middleware": [
+            null
+          ]
+        }
+      }
+    }
+  }
+}
