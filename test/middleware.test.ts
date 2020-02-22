@@ -134,7 +134,7 @@ describe('Middleware', function() {
     snapshot(middleware.routes);
   });
 
-  it('it also exports match', async function() {
+  it('it also exports matching', async function() {
     const ctx = { path: '/foo/bar/not-found', method: 'GET' };
     const r = {
       get: {
