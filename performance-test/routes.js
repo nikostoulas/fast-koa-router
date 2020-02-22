@@ -21,7 +21,8 @@ const routes = {
     }
   }
 };
-for (let route = 0; route <= 10000; route++) {
+
+for (let route = 0; route <= 300; route++) {
   routes[`/api/v1/${route}`] = actions;
   routes[`/api/v1/${route}/:id`] = actions;
 }

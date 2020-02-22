@@ -34,10 +34,10 @@
     "instrument": true
   },
   "devDependencies": {
+    "@koa/router": "^8.0.8",
     "@types/mocha": "^5.2.6",
     "@types/node": "^11.13.8",
     "koa": "^2.6.1",
-    "koa-router": "^7.4.0",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
     "snap-shot-it": "^7.8.0",
