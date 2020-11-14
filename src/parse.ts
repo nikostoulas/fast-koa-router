@@ -95,41 +95,48 @@ export function getPathMethod(routes, path: string, method) {
     return { middleware: routes[path].middleware, _matchedRoute: path };
   } else {
     const parts = path.split('/').filter(x => x);
-    let iterator = routes;
-    let middleware;
-    let lastMiddlewareRoute;
-    if (parts.length === 0 && iterator['/_STAR_']) {
-      iterator = iterator['/_STAR_'];
-      _matchedRoute += '/*';
+    if (parts.length === 0 && routes['/_STAR_']) {
+      return {
+        middleware: routes['/_STAR_'].middleware,
+        params: {},
+        _matchedRoute: '/*'
+      };
     }
-    for (const path of parts) {
-      if (iterator['/_STAR_']) {
-        lastMiddlewareRoute = _matchedRoute + '/*';
-        middleware = iterator['/_STAR_'].middleware;
-      }
-      if (iterator[`/${path}`]) {
-        _matchedRoute += `/${path}`;
-        iterator = iterator[`/${path}`];
-      } else if (iterator['/_VAR_']) {
-        iterator = iterator['/_VAR_'];
-        params[iterator.paramName] = path;
-        _matchedRoute += `/:${iterator.paramName}`;
-      } else if (iterator['/_STAR_'] && iterator['/_STAR_'].middleware) {
-        _matchedRoute += '/*';
-        return { middleware: iterator['/_STAR_'].middleware, _matchedRoute };
-      } else {
-        if (middleware) {
-          return { middleware, _matchedRoute: lastMiddlewareRoute };
-        }
-        return {};
-      }
-    }
-    if (iterator.middleware) {
-      return { middleware: iterator.middleware, params, _matchedRoute };
-    } else if (middleware) {
-      return { middleware, _matchedRoute: lastMiddlewareRoute };
-    } else {
-      return {};
+    return getPathMethodRecursively(routes, parts) || {};
+  }
+}
+
+function getPathMethodRecursively(routes, remainingPaths) {
+  let params = {};
+  let [currentPath, ...rest] = remainingPaths;
+  if (!currentPath && routes.middleware) return { _matchedRoute: '', params, middleware: routes.middleware };
+
+  if (routes[`/${currentPath}`]) {
+    const remaining = getPathMethodRecursively(routes[`/${currentPath}`], rest);
+    if (remaining) {
+      return {
+        _matchedRoute: `/${currentPath}${remaining._matchedRoute}`,
+        params: remaining.params,
+        middleware: remaining.middleware
+      };
     }
   }
+
+  if (routes['/_VAR_']) {
+    params[routes.paramName] = currentPath;
+    const remaining = getPathMethodRecursively(routes[`/_VAR_`], rest);
+    if (remaining) {
+      return {
+        _matchedRoute: `/:${routes['/_VAR_'].paramName}${remaining._matchedRoute}`,
+        params: { ...remaining.params, [routes['/_VAR_'].paramName]: currentPath },
+        middleware: remaining.middleware
+      };
+    }
+  }
+
+  if (routes['/_STAR_'] && routes['/_STAR_'].middleware) {
+    return { middleware: routes['/_STAR_'].middleware, params: {}, _matchedRoute: '/*' };
+  }
+
+  return false;
 }
