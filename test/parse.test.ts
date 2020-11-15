@@ -146,7 +146,7 @@ describe('Parse', function () {
   });
 
   describe('route that matches every path', function () {
-    it('failing case to be fixed', function () {
+    it('should fallback to star with path variable', function () {
       let routes = handlePathVariables(
         addPrefixMiddleware(
           parse({
@@ -165,6 +165,70 @@ describe('Parse', function () {
       assert.deepStrictEqual(getPathMethod(routes, '/path/foo', 'get'), {
         _matchedRoute: '/:path/*',
         params: { path: 'path' },
+        middleware: ['star']
+      });
+    });
+
+    it('star path should also match with path ending in /', function () {
+      let routes = handlePathVariables(
+        addPrefixMiddleware(
+          parse({
+            get: {
+              '/path': ['middleware'],
+              '/path/1': ['one'],
+              '/path/1/3/foo': ['foo'],
+              '/:path/*': ['star'],
+              '/*': ['initialStar']
+            }
+          }),
+          { '/path': 'prefix' }
+        )
+      );
+
+      assert.deepStrictEqual(getPathMethod(routes, '/foo/', 'get'), {
+        _matchedRoute: '/:path/*',
+        params: { path: 'foo' },
+        middleware: ['star']
+      });
+
+      assert.deepStrictEqual(getPathMethod(routes, '/foo', 'get'), {
+        _matchedRoute: '/:path/*',
+        params: { path: 'foo' },
+        middleware: ['star']
+      });
+    });
+
+    it('star path should also work with many params in path', function () {
+      let routes = handlePathVariables(
+        addPrefixMiddleware(
+          parse({
+            get: {
+              '/path': ['middleware'],
+              '/path/1': ['one'],
+              '/path/1/3/foo': ['foo'],
+              '/:path/:value/*': ['star'],
+              '/*': ['initialStar']
+            }
+          }),
+          { '/path': 'prefix' }
+        )
+      );
+
+      assert.deepStrictEqual(getPathMethod(routes, '/path/2/3', 'get'), {
+        _matchedRoute: '/:path/:value/*',
+        params: { path: 'path', value: '2' },
+        middleware: ['star']
+      });
+
+      assert.deepStrictEqual(getPathMethod(routes, '/path/1/3', 'get'), {
+        _matchedRoute: '/:path/:value/*',
+        params: { path: 'path', value: '1' },
+        middleware: ['star']
+      });
+
+      assert.deepStrictEqual(getPathMethod(routes, '/path/1/3/foo/bar', 'get'), {
+        _matchedRoute: '/:path/:value/*',
+        params: { path: 'path', value: '1' },
         middleware: ['star']
       });
     });
