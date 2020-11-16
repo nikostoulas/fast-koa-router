@@ -198,6 +198,41 @@ describe('Parse', function () {
       });
     });
 
+    it('star path should also match with path not ending with /', function () {
+      let routes = handlePathVariables(
+        addPrefixMiddleware(
+          parse({
+            get: {
+              '/path': ['middleware'],
+              '/path/1': ['one'],
+              '/path/1/3/foo': ['foo'],
+              '/foo/*': ['star'],
+              '/*': ['initialStar']
+            }
+          }),
+          { '/path': 'prefix' }
+        )
+      );
+
+      assert.deepStrictEqual(getPathMethod(routes, '/foo/', 'get'), {
+        _matchedRoute: '/foo/*',
+        params: {},
+        middleware: ['star']
+      });
+
+      assert.deepStrictEqual(getPathMethod(routes, '/foo', 'get'), {
+        _matchedRoute: '/foo/*',
+        params: {},
+        middleware: ['star']
+      });
+
+      assert.deepStrictEqual(getPathMethod(routes, '/foobar', 'get'), {
+        _matchedRoute: '/*',
+        params: {},
+        middleware: ['initialStar']
+      });
+    });
+
     it('star path should also work with many params in path', function () {
       let routes = handlePathVariables(
         addPrefixMiddleware(

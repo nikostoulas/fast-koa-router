@@ -88,10 +88,8 @@ export function getPathMethod(routes, path: string, method) {
   if (path.endsWith('/')) {
     path = path.substr(0, path.length - 1);
   }
-  const params = {};
-  let _matchedRoute = '';
   routes = routes[method] || {};
-  if (routes[path]) {
+  if (routes[path] && routes[path].middleware) {
     return { middleware: routes[path].middleware, _matchedRoute: path };
   } else {
     const parts = path.split('/').filter(x => x);
