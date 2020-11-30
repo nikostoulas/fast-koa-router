@@ -34,6 +34,43 @@ describe('Parse', function () {
     });
   });
 
+  it('should return routes with many params that does not match with another route', function () {
+    let routes = handlePathVariables(
+      parse({
+        get: {
+          '/path/:id/:name': ['middleware'],
+          '/path/:id/:anotherName/:name': ['one']
+        }
+      })
+    );
+    assert.deepStrictEqual(getPathMethod(routes, '/path/id/another/name', 'get'), {
+      middleware: ['one'],
+      params: { id: 'id', anotherName: 'another', name: 'name' },
+      _matchedRoute: '/path/:id/:anotherName,name/:name'
+    });
+
+    assert.deepStrictEqual(getPathMethod(routes, '/path/id/name', 'get'), {
+      middleware: ['middleware'],
+      params: { id: 'id', name: 'name', anotherName: 'name' },
+      _matchedRoute: '/path/:id/:anotherName,name'
+    });
+  });
+
+  it('should return routes with many params with the same name', function () {
+    let routes = handlePathVariables(
+      parse({
+        get: {
+          '/path/:id/:id': ['middleware']
+        }
+      })
+    );
+    assert.deepStrictEqual(getPathMethod(routes, '/path/id/diffId', 'get'), {
+      middleware: ['middleware'],
+      params: { id: 'diffId' },
+      _matchedRoute: '/path/:id/:id'
+    });
+  });
+
   it('should return routes ignoring ending slash', function () {
     assert.deepStrictEqual(getPathMethod(handlePathVariables(parse(routes)), '/nested/path/id/', 'policy'), {
       middleware: [],

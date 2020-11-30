@@ -13,26 +13,26 @@ It uses a simple routes json object. Routes order does not matter. Performance d
 ```js
 const routes = {
   get: {
-    '/path': async function(ctx, next) {
+    '/path': async function (ctx, next) {
       ctx.body = 'ok';
     },
     '/nested': {
-      '/path': async function(ctx, next) {},
-      '/path/:id': async function(ctx, next) {}
+      '/path': async function (ctx, next) {},
+      '/path/:id': async function (ctx, next) {}
     }
   },
   post: {
-    '/path': async function(ctx, next) {}
+    '/path': async function (ctx, next) {}
   },
   policy: {
-    '/path': async function(ctx, next) {},
+    '/path': async function (ctx, next) {},
     '/nested': {
-      '/path': async function(ctx, next) {},
-      '/path/:id': async function(ctx, next) {}
+      '/path': async function (ctx, next) {},
+      '/path/:id': async function (ctx, next) {}
     }
   },
   prefix: {
-    '/': async function(ctx, next) {} // / matches all routes
+    '/': async function (ctx, next) {} // / matches all routes
   }
 };
 
@@ -40,18 +40,18 @@ const routes = {
 
 const routes = {
   '/path': {
-    get: async function(ctx, next) {
+    get: async function (ctx, next) {
       ctx.body = 'ok';
     },
-    post: async function(ctx, next) {},
-    policy: async function(ctx, next) {}
+    post: async function (ctx, next) {},
+    policy: async function (ctx, next) {}
   },
   '/nested': {
-    '/path': { get: async function(ctx, next) {}, policy: async function(ctx, next) {} },
-    '/path/:id': { get: async function(ctx, next) {}, policy: async function(ctx, next) {} }
+    '/path': { get: async function (ctx, next) {}, policy: async function (ctx, next) {} },
+    '/path/:id': { get: async function (ctx, next) {}, policy: async function (ctx, next) {} }
   },
   prefix: {
-    '/': async function(ctx, next) {} // / matches all routes
+    '/': async function (ctx, next) {} // / matches all routes
   }
 };
 
@@ -59,20 +59,20 @@ const routes = {
 
 const routes = {
   get: {
-    '/path': async function(ctx, next) {},
-    '/nested/path': async function(ctx, next) {},
-    '/nested/path/:id': async function(ctx, next) {}
+    '/path': async function (ctx, next) {},
+    '/nested/path': async function (ctx, next) {},
+    '/nested/path/:id': async function (ctx, next) {}
   },
   post: {
-    '/path': async function(ctx, next) {}
+    '/path': async function (ctx, next) {}
   },
   policy: {
-    '/path': async function(ctx, next) {},
-    '/nested/path': async function(ctx, next) {},
-    '/nested/path/:id': async function(ctx, next) {}
+    '/path': async function (ctx, next) {},
+    '/nested/path': async function (ctx, next) {},
+    '/nested/path/:id': async function (ctx, next) {}
   },
   prefix: {
-    '/': async function(ctx, next) {} // / matches all routes
+    '/': async function (ctx, next) {} // / matches all routes
   }
 };
 ```
@@ -116,10 +116,9 @@ node
     [AsyncFunction: '/nested/path']  // get route
   ]
 }
-> route.routes 
+> route.routes
 // contains the compiled routes
 ```
-
 
 ## Star symbol
 
@@ -144,6 +143,56 @@ const routes = {
 Note that star symbol is only supported after version 1.1.0 and only when used in the end of a route.
 
 There is no reason to use it in prefix routes. Prefix routes will always match get, post, delete, patch, put urls if they use the same prefix.
+
+## Variables
+
+You can use variables in paths eg
+
+```js
+const routes = {
+  get: {
+    '/path/:id': async function (ctx) {
+      ctx.body = ctx.params.id;
+    }
+  }
+};
+```
+
+If you hit the url `/path/1` the ctx.params.id will be equal to 1.
+Using different variable names in similar paths is discouraged eg:
+
+```js
+const routes = {
+  get: {
+    '/path/:id': async function (ctx) { ctx.body = ctx.params.id;  }
+    '/path/:differentId/foo': async function (ctx) { ctx.body = ctx.params.id;  }
+  }
+};
+```
+
+In such cases both ctx.params.id and ctx.params.differentId will be set.
+If there is a conflict in names with a variable used later on then the variable that comes later in the path has priority:
+
+```js
+const routes = {
+  get: {
+    '/path/:id/:id': async function (ctx) {
+      ctx.body = ctx.params.id;
+    }
+  }
+};
+
+// or 
+const routes = {
+  get: {
+    '/path/:id': async function (ctx) { ctx.body = ctx.params.id;  }
+    '/path/:differentId/:id': async function (ctx) { ctx.body = ctx.params.id;  }
+  }
+};
+```
+If you hit the url `/path/1/2` the ctx.params.id will equal to 2.
+Again such usage is discouraged
+
 
 ## Policies
 
@@ -170,18 +219,31 @@ However complex regex matching is not supported.
 Performances tests existing in this codebase and comparing fast-koa-router with @koa/router.
 
 To start fast-koa-router example:
+
 ```
+
 node performance-test/router/server.js
+
 ```
 
 To start @koa/router example:
-```
-node performance-test/koa-router/server.js 
+
 ```
 
-Metrics have been taken using ab: 
+node performance-test/koa-router/server.js
+
 ```
+
+Metrics have been taken using ab:
+
+```
+
 ab -k -n 1000000 -c 100 localhost:8080/api/v1/1/2
+
 ```
 
 ![image](https://user-images.githubusercontent.com/1398718/75097736-eace0300-55b6-11ea-850e-6c8c62593c07.png)
+
+```
+
+```
