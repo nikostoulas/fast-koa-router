@@ -181,6 +181,14 @@ const routes = {
     }
   }
 };
+
+// or 
+const routes = {
+  get: {
+    '/path/:id': async function (ctx) { ctx.body = ctx.params.id;  }
+    '/path/:differentId/:id': async function (ctx) { ctx.body = ctx.params.id;  }
+  }
+};
 ```
 If you hit the url `/path/1/2` the ctx.params.id will equal to 2.
 Again such usage is discouraged
