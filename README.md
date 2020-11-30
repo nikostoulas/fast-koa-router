@@ -158,7 +158,7 @@ const routes = {
 };
 ```
 
-If you hit the url `/path/1` the ctx.params.id will equal to 1.
+If you hit the url `/path/1` the ctx.params.id will be equal to 1.
 Using different variable names in similar paths is discouraged eg:
 
 ```js
