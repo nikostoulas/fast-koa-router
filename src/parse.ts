@@ -7,6 +7,7 @@ methods.set('put', true);
 methods.set('policy', true);
 
 const isHttpMethodOrPolicy = key => methods.has(key);
+const makeArray = args => (Array.isArray(args) ? args : [args]);
 
 export function parse(routes, path = '', method = null, parsedObj = {}) {
   if (!routes) {
@@ -48,7 +49,13 @@ export function handlePathVariables(parsedObj) {
       let i = 0;
       for (const path of parts) {
         iterator[`/${path}`] = iterator[`/${path}`] || {};
-        if (path === '_VAR_') iterator[`/${path}`].paramName = oldParts[i].substring(1);
+        if (path === '_VAR_') {
+          if (iterator[`/${path}`].paramName && iterator[`/${path}`].paramName !== oldParts[i].substring(1)) {
+            iterator[`/${path}`].paramName = [...makeArray(iterator[`/${path}`].paramName), oldParts[i].substring(1)];
+          } else {
+            iterator[`/${path}`].paramName = oldParts[i].substring(1);
+          }
+        }
         iterator = iterator[`/${path}`];
         if (i === parts.length - 1) {
           Object.assign(iterator, value);
@@ -105,9 +112,8 @@ export function getPathMethod(routes, path: string, method) {
 }
 
 function getPathMethodRecursively(routes, remainingPaths) {
-  let params = {};
   let [currentPath, ...rest] = remainingPaths;
-  if (!currentPath && routes.middleware) return { _matchedRoute: '', params, middleware: routes.middleware };
+  if (!currentPath && routes.middleware) return { _matchedRoute: '', params: {}, middleware: routes.middleware };
 
   if (routes[`/${currentPath}`]) {
     const remaining = getPathMethodRecursively(routes[`/${currentPath}`], rest);
@@ -121,12 +127,17 @@ function getPathMethodRecursively(routes, remainingPaths) {
   }
 
   if (routes['/_VAR_']) {
-    params[routes.paramName] = currentPath;
     const remaining = getPathMethodRecursively(routes[`/_VAR_`], rest);
+    const params = {};
+    if (Array.isArray(routes['/_VAR_'].paramName)) {
+      routes['/_VAR_'].paramName.forEach(key => (params[key] = currentPath));
+    } else {
+      params[routes['/_VAR_'].paramName] = currentPath;
+    }
     if (remaining) {
       return {
         _matchedRoute: `/:${routes['/_VAR_'].paramName}${remaining._matchedRoute}`,
-        params: { ...remaining.params, [routes['/_VAR_'].paramName]: currentPath },
+        params: { ...params, ...remaining.params },
         middleware: remaining.middleware
       };
     }
