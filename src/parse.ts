@@ -126,7 +126,7 @@ function getPathMethodRecursively(routes, remainingPaths) {
     }
   }
 
-  if (routes['/_VAR_']) {
+  if (routes['/_VAR_'] && currentPath) {
     const remaining = getPathMethodRecursively(routes[`/_VAR_`], rest);
     const params = {};
     if (Array.isArray(routes['/_VAR_'].paramName)) {

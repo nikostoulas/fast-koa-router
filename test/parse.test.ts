@@ -34,6 +34,13 @@ describe('Parse', function () {
     });
   });
 
+  it('should return no routes for policy and path without params', function () {
+    assert.deepStrictEqual(
+      getPathMethod(handlePathVariables(parse({ post: { '/new_path/:id': [] } })), '/new_path', 'post'),
+      {}
+    );
+  });
+
   it('should return routes with many params that does not match with another route', function () {
     let routes = handlePathVariables(
       parse({
@@ -350,7 +357,7 @@ describe('Parse', function () {
       });
     });
 
-    it('should fallback to star routes', function () {
+    it('should fallback to star routes without ', function () {
       let routes = handlePathVariables(
         addPrefixMiddleware(
           parse({
