@@ -11,7 +11,7 @@
     "watch": "tsc -w -p src",
     "prepublishOnly": "npm run build && npm test",
     "pretest": "tslint src/*.ts",
-    "test": "nyc mocha"
+    "test": "TS_NODE_PROJECT='./test/tsconfig.json' nyc mocha"
   },
   "author": "Nikos Kostoulas <nikostoulas@gmail.com>",
   "repository": "nikostoulas/fast-koa-router",
