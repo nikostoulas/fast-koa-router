@@ -20,7 +20,7 @@ export const router = routes => {
   return fastKoaRouter;
 };
 
-function getMiddleware(router: any, ctx: { path: any; method: string }) {
+export function getMiddleware(router: any, ctx: { path: any; method: string }) {
   const policy = router.getPolicy(ctx);
   const middleware = router.getMiddlewareAndSetState(ctx);
   const middlewares = [];
